@@ -19,24 +19,30 @@ namespace NewsletterProvider.Functions
         public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req)
         {
             var body = await new StreamReader(req.Body).ReadToEndAsync();
-            if(!string.IsNullOrEmpty(body))
+            try
             {
-                var subscribeEntity = JsonConvert.DeserializeObject<SubscribeEntity>(body);
-                if(subscribeEntity != null)
+                if (!string.IsNullOrEmpty(body))
                 {
-                    var existingSubscriber = await _context.Subscribe.FirstOrDefaultAsync(s => s.Email == subscribeEntity.Email);
-                    if(existingSubscriber != null)
+                    var subscribeEntity = JsonConvert.DeserializeObject<SubscribeEntity>(body);
+                    if (subscribeEntity != null)
                     {
-                        _context.Entry(existingSubscriber).CurrentValues.SetValues(subscribeEntity);
-                        await _context.SaveChangesAsync();
-                        return new OkObjectResult(new { status = 200, message = "Subscriber was updated" });
-                    }
+                        var existingSubscriber = await _context.Subscribe.FirstOrDefaultAsync(s => s.Email == subscribeEntity.Email);
+                        if (existingSubscriber != null)
+                        {
+                            _context.Entry(existingSubscriber).CurrentValues.SetValues(subscribeEntity);
+                            await _context.SaveChangesAsync();
+                            return new OkObjectResult(new { status = 200, message = "Subscriber was updated" });
+                        }
 
-                    _context.Subscribe.Add(subscribeEntity);
-                    await _context.SaveChangesAsync();
-                    return new OkObjectResult(new { status = 200, message = "Subscriber is now subscribed" });
-                }               
+                        _context.Subscribe.Add(subscribeEntity);
+                        await _context.SaveChangesAsync();
+                        return new OkObjectResult(new { status = 200, message = "Subscriber is now subscribed" });
+                    }
+                }
             }
+            catch (Exception ex)
+            { _logger.LogError($"ERROR : Subscribe.Run() :: {ex.Message}"); }
+           
             return new BadRequestObjectResult(new { status = 400, message = "Unable to subscribe right now" });
         }
     }
