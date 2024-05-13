@@ -5,7 +5,7 @@
 namespace Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitSubscribeTable : Migration
+    public partial class SubscribeTable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,7 +15,6 @@ namespace Data.Migrations
                 columns: table => new
                 {
                     Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    IsSubscribed = table.Column<bool>(type: "bit", nullable: false),
                     DailyNewsLetter = table.Column<bool>(type: "bit", nullable: false),
                     AdvertisingUpdates = table.Column<bool>(type: "bit", nullable: false),
                     WeekInReviews = table.Column<bool>(type: "bit", nullable: false),

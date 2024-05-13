@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240509113156_InitSubscribeTable")]
-    partial class InitSubscribeTable
+    [Migration("20240513073002_SubscribeTable")]
+    partial class SubscribeTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,9 +36,6 @@ namespace Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("EventUpdates")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsSubscribed")
                         .HasColumnType("bit");
 
                     b.Property<bool>("Podcasts")
