@@ -36,7 +36,7 @@ namespace NewsletterProvider.Functions
 
                         _context.Subscribe.Add(subscribeEntity);
                         await _context.SaveChangesAsync();
-                        return new OkObjectResult(new { status = 200, message = "Subscriber is now subscribed" });
+                        return new OkResult();
                     }
                 }
             }
