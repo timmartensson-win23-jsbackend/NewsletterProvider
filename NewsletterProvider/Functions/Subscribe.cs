@@ -19,6 +19,9 @@ namespace NewsletterProvider.Functions
         public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req)
         {
             var body = await new StreamReader(req.Body).ReadToEndAsync();
+
+            _logger.LogInformation("Received request body: " + body);
+
             try
             {
                 if (!string.IsNullOrEmpty(body))
@@ -26,14 +29,17 @@ namespace NewsletterProvider.Functions
                     var subscribeEntity = JsonConvert.DeserializeObject<SubscribeEntity>(body);
                     if (subscribeEntity != null)
                     {
+                        _logger.LogInformation("Deserialized subscribeEntity: " + JsonConvert.SerializeObject(subscribeEntity));
                         var existingSubscriber = await _context.Subscribe.FirstOrDefaultAsync(s => s.Email == subscribeEntity.Email);
                         if (existingSubscriber != null)
                         {
+                            _logger.LogInformation("Found existing subscriber with email: " + subscribeEntity.Email);
                             _context.Entry(existingSubscriber).CurrentValues.SetValues(subscribeEntity);
                             await _context.SaveChangesAsync();
                             return new OkObjectResult(new { status = 200, message = "Subscriber was updated" });
                         }
 
+                        _logger.LogInformation("No existing subscriber found, adding new subscriber");
                         _context.Subscribe.Add(subscribeEntity);
                         await _context.SaveChangesAsync();
                         return new OkResult();
