@@ -45,5 +45,20 @@ namespace NewsletterProvider.Functions
            
             return new BadRequestObjectResult(new { status = 400, message = "Unable to subscribe right now" });
         }
+
+        [Function("GetAllEmails")]
+        public async Task<IActionResult> GetAllEmailsAsync([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequest req)
+        {
+            try
+            {
+                var emails = await _context.Subscribe.Select(s => s.Email).ToListAsync();
+                return new OkObjectResult(emails);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"ERROR : Subscribe.GetAllEmails() :: {ex.Message}");
+                return new StatusCodeResult(500);
+            }
+        }
     }
 }
