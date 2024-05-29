@@ -34,7 +34,10 @@ namespace NewsletterProvider.Functions
                         if (existingSubscriber != null)
                         {
                             _logger.LogInformation("Found existing subscriber with email: " + subscribeEntity.OldEmail);
-                            _context.Entry(existingSubscriber).CurrentValues.SetValues(subscribeEntity);
+                            _context.Subscribe.Remove(existingSubscriber);
+                            await _context.SaveChangesAsync();
+
+                            _context.Subscribe.Add(subscribeEntity);
                             await _context.SaveChangesAsync();
                             return new OkObjectResult(new { status = 200, message = "Subscriber was updated" });
                         }
