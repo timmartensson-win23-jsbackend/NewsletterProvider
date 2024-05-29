@@ -30,10 +30,10 @@ namespace NewsletterProvider.Functions
                     if (subscribeEntity != null)
                     {
                         _logger.LogInformation("Deserialized subscribeEntity: " + JsonConvert.SerializeObject(subscribeEntity));
-                        var existingSubscriber = await _context.Subscribe.FirstOrDefaultAsync(s => s.Email == subscribeEntity.Email);
+                        var existingSubscriber = await _context.Subscribe.FirstOrDefaultAsync(s => s.Email == subscribeEntity.OldEmail);
                         if (existingSubscriber != null)
                         {
-                            _logger.LogInformation("Found existing subscriber with email: " + subscribeEntity.Email);
+                            _logger.LogInformation("Found existing subscriber with email: " + subscribeEntity.OldEmail);
                             _context.Entry(existingSubscriber).CurrentValues.SetValues(subscribeEntity);
                             await _context.SaveChangesAsync();
                             return new OkObjectResult(new { status = 200, message = "Subscriber was updated" });
